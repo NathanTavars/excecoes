@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+
 public class Reservation {
 
 	private Integer roomNumber;
@@ -13,7 +14,9 @@ public class Reservation {
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	public Reservation(Integer roomNumber, Date checkin, Date checkout) {
-		super();
+		if (!checkout.after(checkin)) {
+			throw new  IllegalArgumentException("Check-out date must be after ckeck-in date");
+		}
 		this.roomNumber = roomNumber;
 		this.checkin = checkin;
 		this.checkout = checkout;
@@ -40,18 +43,17 @@ public class Reservation {
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}
 
-	public String updateDates(Date checkin, Date checkout) {
+	public void updateDates(Date checkin, Date checkout) {
 		Date now = new Date();
 		if (checkin.before(now) || checkout.before(now)) {
-			return "Reservation dates for update must be future dates";
+			throw new  IllegalArgumentException("Reservation dates for update must be future dates");
 		}
 		if (!checkout.after(checkin)) {
-			return "Check-out date must be after ckeck-in date";
+			throw new  IllegalArgumentException("Check-out date must be after ckeck-in date");
 		}
 
 		this.checkin = checkin;
 		this.checkout = checkout;
-		return null;
 	}
 
 	@Override
